@@ -72,26 +72,27 @@ class ConnectFourState(State):
 
         return (mask, position)
 
-    def bit_to_array(self, mask, position, current_player = 'x', other_player = 'o'):
+    def bit_to_array(self, current_player = 'x', other_player = 'o'):
 
         """
         Inverse of array_to_bit
         """
 
         result = [""] * self.HEIGHT
+        m, p = self.mask, self.position
         for c in range(self.WIDTH):
             for r in reversed(range(-1, self.HEIGHT)):
                 if r == -1:
                     pass # ignore the blank space
-                elif mask & 1:
-                    if position & 1:
+                elif m & 1:
+                    if p & 1:
                         result[r] += current_player
                     else:
                         result[r] += other_player
                 else:
                     result[r] += '.'
-                mask >>= 1
-                position >>= 1
+                m >>= 1
+                p >>= 1
         return result
     
     def is_valid_action(self, col):
@@ -104,9 +105,9 @@ class ConnectFourState(State):
         if not self.is_valid_action(col):
             raise Exception("Attempted invalid action: " + str(col))
         new = copy(self)
-        new.position ^= new.mask
-        # new.current_player *= -1
         new.mask |= new.mask + (1 << (new.HEIGHT + 1) * col)
+        new.position ^= new.mask
+        new.current_player *= -1
         return new
 
     def is_terminal(self):
@@ -128,11 +129,11 @@ if __name__=="__main__":
          ".oxoo.."]
     X = ConnectFourState(A)
     print(bin(X.mask), bin(X.position))
-    print_array(X.bit_to_array(X.mask, X.position))
+    print_array(X.bit_to_array())
     new = X.act(2)
-    print_array(new.bit_to_array(new.mask, new.position))
+    print_array(new.bit_to_array())
     newer = new.act(2)
-    print_array(newer.bit_to_array(newer.mask, newer.position))
+    print_array(newer.bit_to_array())
 
     initialState = X
     searcher = MCTS(sims = 1000)
