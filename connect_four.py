@@ -168,5 +168,5 @@ if __name__=="__main__":
          "......."]
 
     initial_state = ConnectFourState(A, 1)
-    searcher = MCTS(sims = 50000)
+    searcher = MCTS(sims = 10000)
     searcher.search(initial_state, verbose = True)

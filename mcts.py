@@ -1,11 +1,8 @@
 import math, random
 
-
 class MCTSNode:
     def __init__(self, state = None, parent = None):
-        # print(state.current_player)
         self.state = state
-        # print(self.state)
         self.visits = 0
         self.score = 0.0
         self.children = {} # dict of actions to successor nodes
@@ -19,16 +16,13 @@ def random_action(state):
     Plays a game using random actions until a terminal state is reached.
     Returns score of that game. 
     """
-    # print(state)
     while not state.is_terminal():
         valid = state.get_valid_actions()
         if not valid:
             raise Exception("Non-terminal state has no valid actions: " + str(state))
         else:
             action = random.choice(valid)
-            # print(action)
             state = state.act(action)
-    # print("Final:" + str(state))
     return state.get_score()
 
 class MCTS:
@@ -45,9 +39,7 @@ class MCTS:
         If verbose is true, displays summary statistics for all child nodes. 
         """
 
-        # print(state.position)
         self.root = MCTSNode(state)
-        # print(state.position)
         for i in range(self.sims):
             self.simulate()
 
@@ -110,11 +102,9 @@ class MCTS:
         """
         Creates a new child node corresponding to a yet unexplored action. 
         """
-       #  print("Initial" + str(node.state))
         valid = node.state.get_valid_actions()
         for a in valid:
             if a not in node.children:
-                # print("Expand:" + str(node.state.act(a)))
                 child = MCTSNode(node.state.act(a), node)
                 node.children[a] = child
                 if len(node.children) == len(valid):
